@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8098550994589176495}
   m_Layer: 0
-  m_Name: CheckersPiecePrefab
+  m_Name: PieceRedPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,6 +86,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Checkers Piece
       objectReference: {fileID: 0}
+    - target: {fileID: 7842296094312294292, guid: ec68d18bd5df94645bc44a33bb44fd69, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1cf0b5fe4e58e4c4c8e89a6ad812d5ce, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec68d18bd5df94645bc44a33bb44fd69, type: 3}
 --- !u!4 &1224140552322026659 stripped
