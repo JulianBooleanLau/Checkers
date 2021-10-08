@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class GameScript : MonoBehaviour
 {
-    public GameObject r; //Red Piece
-    public GameObject b; //Black Piece
-    private Transform selectedPiece;
+    //Variables initalized using the drag and drop on inspector
+    public GameObject r; //Red piece prefab
+    public GameObject b; //Black piece prefab
+    private Transform selectedPiece; //Current selected piece
+
+    //Variables used for piece highlighting
+    public Material highlightMaterial; //Material used when piece is highlighted
     private Material selectedPieceStartingMaterial;
+    
 
     GameObject[,] pieceArray = new GameObject[8, 8];
 
@@ -35,49 +40,61 @@ public class GameScript : MonoBehaviour
                 {
                     Instantiate(pieceArray[j,i], new Vector3(i, 0.22f, j), Quaternion.identity);
                 }
-                
             }
         }
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        movePiece();
+    }
+
+    //Allows the user to select a game piece
     void movePiece()
     {
-
-
+        //Do things if you click
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit objectFound = new RaycastHit();
             bool click = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out objectFound);
-            Debug.Log(objectFound.transform.position);
+
+            Vector3 pos = objectFound.transform.position;
+            Debug.Log("Pos X" + pos.x.ToString("f5"));
+            Debug.Log("pos Y" + pos.y.ToString("f5"));
+            Debug.Log("pos Z" + pos.z.ToString("f5"));
+            //Debug.Log(objectFound.transform.position);
+
             if (click && objectFound.transform.tag == "piece" && selectedPiece == null)
             {
                 selectPiece(objectFound, click);
             }
-            else if (click && objectFound.transform.tag == "square" && selectedPiece != null && (objectFound.transform.position.x == selectedPiece.position.x + 0.9 && objectFound.transform.position.z == selectedPiece.position.z + 0.9)) 
+            //The reason why the if statement is weird is due to floating point number comparions.
+            else if (click && objectFound.transform.tag == "square" && selectedPiece != null && ( Mathf.Approximately(objectFound.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(objectFound.transform.position.z, (float)(selectedPiece.position.z + 0.850)) )) 
             {
                 selectSquare(objectFound.transform);
             }
-               
-                //If the player clicks a free square(ie no piece is there) while a piece is highlighted
-                //then move the highlighted piece to the new square and change it's colour to the original colour
+
+            //If the player clicks a free square(ie no piece is there) while a piece is highlighted
+            //then move the highlighted piece to the new square and change it's colour to the original colour
         }
     }
 
+    //Handling selecting a piece
     void selectPiece(RaycastHit pieceFound, bool click)
     {
-        //click somewhere
-        
+        //Click somewhere
         Transform movingPiece;
         
-        //find out what was clicked on
+        //Find out what was clicked on
         movingPiece = pieceFound.transform;
         selectedPiece = movingPiece;
 
 
-        //highlighting
-        Material yourMaterial = Resources.Load("Materials/Highlight", typeof(Material)) as Material;
-        selectedPieceStartingMaterial = movingPiece.GetChild(0).GetChild(0).gameObject.GetComponent<Renderer>().material;
-        movingPiece.GetChild(0).GetChild(0).gameObject.GetComponent<Renderer>().material = yourMaterial;
+        //Highlighting
+        //Material highlightMaterial = Resources.Load("Assets/Materials/Highlight", typeof(Material)) as Material;
+        selectedPieceStartingMaterial = movingPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
+        movingPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = highlightMaterial;
     }
 
     void selectSquare(Transform square)
@@ -92,16 +109,9 @@ public class GameScript : MonoBehaviour
 
     void deselectCurrent()
     {
-        selectedPiece.GetChild(0).GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
+        selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
         selectedPiece = null;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        movePiece();
-
-    }
 }
 
