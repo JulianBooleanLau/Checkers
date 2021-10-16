@@ -6,6 +6,7 @@ TagManager:
   tags:
   - piece
   - square
+  - selectedPiece
   layers:
   - Default
   - TransparentFX

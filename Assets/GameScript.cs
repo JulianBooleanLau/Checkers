@@ -58,23 +58,28 @@ public class GameScript : MonoBehaviour
         {
             RaycastHit objectFound = new RaycastHit();
             bool click = Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out objectFound);
-
-            Vector3 pos = objectFound.transform.position;
-            Debug.Log("Pos X" + pos.x.ToString("f5"));
-            Debug.Log("pos Y" + pos.y.ToString("f5"));
-            Debug.Log("pos Z" + pos.z.ToString("f5"));
-            //Debug.Log(objectFound.transform.position);
-
-            if (click && objectFound.transform.tag == "piece" && selectedPiece == null)
+            if (click)
             {
-                selectPiece(objectFound, click);
-            }
-            //The reason why the if statement is weird is due to floating point number comparions.
-            else if (click && objectFound.transform.tag == "square" && selectedPiece != null && ( Mathf.Approximately(objectFound.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(objectFound.transform.position.z, (float)(selectedPiece.position.z + 0.850)) )) 
-            {
-                selectSquare(objectFound.transform);
-            }
+                Vector3 pos = objectFound.transform.position;
+                Debug.Log("Pos X" + pos.x.ToString("f5"));
+                Debug.Log("pos Y" + pos.y.ToString("f5"));
+                Debug.Log("pos Z" + pos.z.ToString("f5"));
+                //Debug.Log(objectFound.transform.position);
 
+                if (click && objectFound.transform.tag == "piece" && selectedPiece == null)
+                {
+                    selectPiece(objectFound, click);
+                }
+                else if (click && objectFound.transform.tag == "selectedPiece" && selectedPiece != null)
+                {
+                    deselectCurrent();
+                }
+                //The reason why the if statement is weird is due to floating point number comparions.
+                else if (click && objectFound.transform.tag == "square" && selectedPiece != null && (Mathf.Approximately(objectFound.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(objectFound.transform.position.z, (float)(selectedPiece.position.z + 0.850))))
+                {
+                    selectSquare(objectFound.transform);
+                }
+            }
             //If the player clicks a free square(ie no piece is there) while a piece is highlighted
             //then move the highlighted piece to the new square and change it's colour to the original colour
         }
@@ -94,7 +99,8 @@ public class GameScript : MonoBehaviour
         //Highlighting
         //Material highlightMaterial = Resources.Load("Assets/Materials/Highlight", typeof(Material)) as Material;
         selectedPieceStartingMaterial = movingPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
-        movingPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = highlightMaterial;
+        selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = highlightMaterial;
+        selectedPiece.tag = "selectedPiece";
     }
 
     void selectSquare(Transform square)
@@ -110,6 +116,7 @@ public class GameScript : MonoBehaviour
     void deselectCurrent()
     {
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
+        selectedPiece.tag = "piece";
         selectedPiece = null;
     }
 
