@@ -8,10 +8,12 @@ public class GameScript : MonoBehaviour
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
     private Transform selectedPiece; //Current selected piece
+ 
 
     //Variables used for piece highlighting
     public Material highlightMaterial; //Material used when piece is highlighted
     private Material selectedPieceStartingMaterial;
+    private string selectedPieceStartingTag;   
     
 
     GameObject[,] pieceArray = new GameObject[8, 8];
@@ -66,7 +68,7 @@ public class GameScript : MonoBehaviour
                 Debug.Log("pos Z" + pos.z.ToString("f5"));
                 //Debug.Log(objectFound.transform.position);
 
-                if (click && objectFound.transform.tag == "piece" && selectedPiece == null)
+                if (click && (objectFound.transform.tag == "redPiece" || objectFound.transform.tag == "blackPiece") && selectedPiece == null)
                 {
                     selectPiece(objectFound, click);
                 }
@@ -75,7 +77,7 @@ public class GameScript : MonoBehaviour
                     deselectCurrent();
                 }
                 //The reason why the if statement is weird is due to floating point number comparions.
-                else if (click && objectFound.transform.tag == "square" && selectedPiece != null && (Mathf.Approximately(objectFound.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(objectFound.transform.position.z, (float)(selectedPiece.position.z + 0.850))))
+                else if (click && objectFound.transform.tag == "square" && selectedPiece != null)
                 {
                     selectSquare(objectFound.transform);
                 }
@@ -85,28 +87,56 @@ public class GameScript : MonoBehaviour
         }
     }
 
+
     //Handling selecting a piece
     void selectPiece(RaycastHit pieceFound, bool click)
-    {
-        //Click somewhere
-        Transform movingPiece;
-        
+    {   
         //Find out what was clicked on
-        movingPiece = pieceFound.transform;
-        selectedPiece = movingPiece;
+        selectedPiece = pieceFound.transform;
 
 
         //Highlighting
         //Material highlightMaterial = Resources.Load("Assets/Materials/Highlight", typeof(Material)) as Material;
-        selectedPieceStartingMaterial = movingPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
+        selectedPieceStartingMaterial = selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
+        selectedPieceStartingTag = selectedPiece.tag;
+        Debug.Log(selectedPieceStartingTag);
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = highlightMaterial;
         selectedPiece.tag = "selectedPiece";
     }
 
     void selectSquare(Transform square)
     {
+        
         //Change position of piece to the empty square
-        selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+        if (selectedPieceStartingTag == "redPiece")
+        {
+            if ( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900) ) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ) )
+            {
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+            }
+            else if( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x -1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ))
+            {
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+            }
+  
+        }
+
+        //Change position of piece to the empty square
+        if (selectedPieceStartingTag == "blackPiece")
+        {
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            {
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+            }
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            {
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+            }
+
+        }
+
 
         //Change piece colour back to its original colour and set selected piece to null
         deselectCurrent();
@@ -116,7 +146,9 @@ public class GameScript : MonoBehaviour
     void deselectCurrent()
     {
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
-        selectedPiece.tag = "piece";
+        selectedPiece.tag = selectedPieceStartingTag;
+        selectedPieceStartingTag = null;
+        selectedPieceStartingMaterial = null;
         selectedPiece = null;
     }
 
