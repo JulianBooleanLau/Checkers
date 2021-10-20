@@ -271,10 +271,7 @@ public class GameScript : MonoBehaviour
         {
 
             hitColliders = Physics.OverlapSphere(spawnPos, radius);
-            foreach(var hitcollider in hitColliders)
-            {
-                Debug.Log(hitcollider.gameObject.tag + " ");
-            }
+
             //Case for Red capturing a black piece
             if( (hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" ) || (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece"))
             {
