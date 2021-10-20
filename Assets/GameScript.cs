@@ -64,20 +64,20 @@ public class GameScript : MonoBehaviour
             {
                 Vector3 pos = objectFound.transform.position;
                 Debug.Log("Pos X" + pos.x.ToString("f5"));
-                Debug.Log("pos Y" + pos.y.ToString("f5"));
+                //Debug.Log("pos Y" + pos.y.ToString("f5"));
                 Debug.Log("pos Z" + pos.z.ToString("f5"));
                 //Debug.Log(objectFound.transform.position);
 
-                if (click && (objectFound.transform.tag == "redPiece" || objectFound.transform.tag == "blackPiece") && selectedPiece == null)
+                if ((objectFound.transform.tag == "redPiece" || objectFound.transform.tag == "blackPiece") && selectedPiece == null)
                 {
                     selectPiece(objectFound, click);
                 }
-                else if (click && objectFound.transform.tag == "selectedPiece" && selectedPiece != null)
+                else if (objectFound.transform.tag == "selectedPiece" && selectedPiece != null)
                 {
                     deselectCurrent();
                 }
                 //The reason why the if statement is weird is due to floating point number comparions.
-                else if (click && objectFound.transform.tag == "square" && selectedPiece != null)
+                else if (objectFound.transform.tag == "square" && selectedPiece != null)
                 {
                     selectSquare(objectFound.transform);
                 }
@@ -99,7 +99,7 @@ public class GameScript : MonoBehaviour
         //Material highlightMaterial = Resources.Load("Assets/Materials/Highlight", typeof(Material)) as Material;
         selectedPieceStartingMaterial = selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
         selectedPieceStartingTag = selectedPiece.tag;
-        Debug.Log(selectedPieceStartingTag);
+        
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = highlightMaterial;
         selectedPiece.tag = "selectedPiece";
     }
@@ -110,40 +110,104 @@ public class GameScript : MonoBehaviour
         //Change position of piece to the empty square
         if (selectedPieceStartingTag == "redPiece")
         {
+            //Checking for legal single tile move
+
+            //To move red piece 1 up 1 right
             if ( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900) ) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ) )
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
             }
-            else if( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x -1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ))
+            //To move red piece 1 up 1 left
+            else if( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x -1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ) )
             {
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z + 1);
             }
-  
+
+            //Checking for legal capture move
+
+            //For red piece to capture 2 up 2 right
+            if ( (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 1.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850)) ) && checkForCapturablePiece( (float)(selectedPiece.position.x + 1), (float)(selectedPiece.position.z + 1) ) )
+            {
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 2, selectedPiece.position.y, selectedPiece.position.z + 2);
+            } //For red piece to capture 2 up 2 left
+            else if ( (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850)) ) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z + 1)))
+            {
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + - 2, selectedPiece.position.y, selectedPiece.position.z + 2);
+            }
+
+
+
         }
 
         //Change position of piece to the empty square
         if (selectedPieceStartingTag == "blackPiece")
         {
-            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            //Checking for legal single tile move
+
+            //To move black piece 1 down 1 right
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            {
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+            }
+            //To move black piece 1 down 1 left
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z - 1);
             }
-            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+
+
+            //Checking for legal capture move
+
+            //For black piece to capture 2 down 2 right
+            if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 1.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 2.150))) && checkForCapturablePiece((float)(selectedPiece.position.x + 1), (float)(selectedPiece.position.z - 1)))
             {
-                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + + 2, selectedPiece.position.y, selectedPiece.position.z - 2);
             }
+            //For blakc piece to capture 2 down 2 left
+            else if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 2.150))) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z - 1)))
+            {
+                //Move the piece to this square
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 2, selectedPiece.position.y, selectedPiece.position.z - 2);
+            } //For red piece to capture 2 up 2 
 
         }
-
 
         //Change piece colour back to its original colour and set selected piece to null
         deselectCurrent();
         
     }
 
-    void deselectCurrent()
+    bool checkForCapturablePiece(float x, float z) {
+        
+        Vector3 spawnPos = new Vector3(x, 0.500f, z);
+        
+        Collider[] hitColliders;
+        
+        float radius = (0.01f);
+        
+        //Checks if a object is inbetween the selected piece's original spot and the capture spot
+        if (Physics.CheckSphere(spawnPos, radius)) 
+        {
+
+            hitColliders = Physics.OverlapSphere(spawnPos, radius);
+            
+            //Case for Red capturing a black piece
+            if( (hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" ) || (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece"))
+            {
+                Destroy(hitColliders[0].gameObject);
+                return true;
+            } 
+
+        }
+        return false;
+    }
+
+void deselectCurrent()
     {
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
         selectedPiece.tag = selectedPieceStartingTag;
