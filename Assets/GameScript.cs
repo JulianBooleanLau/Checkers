@@ -7,6 +7,8 @@ public class GameScript : MonoBehaviour
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
+    public GameObject rKing;
+    public GameObject bKing;
     private Transform selectedPiece; //Current selected piece
  
 
@@ -177,9 +179,21 @@ public class GameScript : MonoBehaviour
 
         }
 
+        //Check if the selected piece has been moved to a king square.
+        checkForKing();
+
         //Change piece colour back to its original colour and set selected piece to null
         deselectCurrent();
         
+    }
+
+    void checkForKing()
+    {
+        if(selectedPieceStartingTag == "redPiece" && selectedPiece.transform.position.z >= 7f)
+        {
+            Instantiate(rKing, new Vector3(selectedPiece.transform.position.x, 0.22f, selectedPiece.transform.position.z), Quaternion.identity);
+            Destroy(selectedPiece.gameObject);
+        }
     }
 
     bool checkForCapturablePiece(float x, float z) {

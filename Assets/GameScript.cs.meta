@@ -6,6 +6,8 @@ MonoImporter:
   defaultReferences:
   - r: {fileID: 5355668342671034629, guid: b34da198964ab7b40890c0f2a226243a, type: 3}
   - b: {fileID: 3108201684504373034, guid: 1622683adcb87934fb151736d124cb53, type: 3}
+  - rKing: {fileID: 2984569601296945584, guid: a319e18abf564c44e999419feedeb04a, type: 3}
+  - bKing: {fileID: 4743256375034533071, guid: 1701d192b25e1bd4ebd101b68ea2148e, type: 3}
   - highlightMaterial: {fileID: 2100000, guid: cca916dbf9f4b4b4f8bdcc85245a2440, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
