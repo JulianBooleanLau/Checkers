@@ -7,6 +7,8 @@ TagManager:
   - piece
   - square
   - selectedPiece
+  - redPiece
+  - blackPiece
   layers:
   - Default
   - TransparentFX
