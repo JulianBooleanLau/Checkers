@@ -23,6 +23,11 @@ public class GameScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Init();
+    }
+
+    void Init() 
+    {
         selectedPiece = null;
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
                                             { null, r, null, r, null, r, null, r },
@@ -273,12 +278,17 @@ public class GameScript : MonoBehaviour
             hitColliders = Physics.OverlapSphere(spawnPos, radius);
 
             //Case for Red capturing a black piece
-            if( (hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" ) || (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece"))
+            if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
                 Destroy(hitColliders[0].gameObject);
+                ScoreBoard.redScore += 1;
                 return true;
-            } 
-
+            } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
+            {
+                Destroy(hitColliders[0].gameObject);
+                ScoreBoard.blackScore += 1;
+                return true;
+            }
         }
         return false;
     }
