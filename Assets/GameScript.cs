@@ -57,7 +57,6 @@ public class GameScript : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Debug.Log("penis");
             PauseScreen.SetActive(true);
         }
 
