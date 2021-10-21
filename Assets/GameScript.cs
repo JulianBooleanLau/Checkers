@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class GameScript : MonoBehaviour
 {
+    //UI variables
+    public GameObject PauseScreen;
+
+
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
@@ -51,6 +55,12 @@ public class GameScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("penis");
+            PauseScreen.SetActive(true);
+        }
+
         movePiece();
     }
 
