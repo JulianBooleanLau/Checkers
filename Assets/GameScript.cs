@@ -8,6 +8,7 @@ public class GameScript : MonoBehaviour
     public GameObject PauseScreen;
 
 
+
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
@@ -26,11 +27,6 @@ public class GameScript : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        Init();
-    }
-
-    void Init() 
     {
         selectedPiece = null;
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
@@ -55,6 +51,10 @@ public class GameScript : MonoBehaviour
                 }
             }
         }
+        
+        //Initialize score
+        ScoreBoard.redScore = 0;
+        ScoreBoard.blackScore = 0;
     }
 
     // Update is called once per frame
