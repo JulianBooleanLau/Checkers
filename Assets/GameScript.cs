@@ -8,6 +8,7 @@ public class GameScript : MonoBehaviour
     public GameObject PauseScreen;
 
 
+
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
@@ -50,6 +51,10 @@ public class GameScript : MonoBehaviour
                 }
             }
         }
+        
+        //Initialize score
+        ScoreBoard.redScore = 0;
+        ScoreBoard.blackScore = 0;
     }
 
     // Update is called once per frame
@@ -282,12 +287,17 @@ public class GameScript : MonoBehaviour
             hitColliders = Physics.OverlapSphere(spawnPos, radius);
 
             //Case for Red capturing a black piece
-            if( (hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" ) || (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece"))
+            if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
                 Destroy(hitColliders[0].gameObject);
+                ScoreBoard.redScore += 1;
                 return true;
-            } 
-
+            } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
+            {
+                Destroy(hitColliders[0].gameObject);
+                ScoreBoard.blackScore += 1;
+                return true;
+            }
         }
         return false;
     }
