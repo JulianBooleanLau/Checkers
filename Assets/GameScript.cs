@@ -6,6 +6,7 @@ public class GameScript : MonoBehaviour
 {
     //UI variables
     public GameObject PauseScreen;
+    public GameObject WinScreen;
 
 
     //Variables initalized using the drag and drop on inspector
@@ -27,6 +28,8 @@ public class GameScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        RedScoreScript.redCurrScore = 0;
+        BlackScoreScript.blackCurrScore = 0;
         selectedPiece = null;
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
                                             { null, r, null, r, null, r, null, r },
@@ -301,6 +304,18 @@ public class GameScript : MonoBehaviour
                 else
                 {
                     BlackScoreScript.blackCurrScore++; //Increase black core
+                }
+
+                //Check if player wins (12 points = win)
+                if (RedScoreScript.redCurrScore == 12)
+                {
+                    WinnerTextScript.currWinner = "Red Wins!";
+                    WinScreen.SetActive(true);
+                }
+                else if (BlackScoreScript.blackCurrScore == 12)
+                {
+                    WinnerTextScript.currWinner = "Black Wins!";
+                    WinScreen.SetActive(true);
                 }
 
                 return true;

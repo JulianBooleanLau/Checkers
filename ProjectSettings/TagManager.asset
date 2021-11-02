@@ -9,6 +9,8 @@ TagManager:
   - selectedPiece
   - redPiece
   - blackPiece
+  - redScore
+  - blackScore
   layers:
   - Default
   - TransparentFX
