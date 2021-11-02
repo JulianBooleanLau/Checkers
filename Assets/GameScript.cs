@@ -187,6 +187,7 @@ public class GameScript : MonoBehaviour
         }
 
         //Change position of king piece to a different square if it's valid
+        //Applies to both black and red king
         else if (selectedPiece.transform.childCount == 2)
         {
             //Includes red piece movement
@@ -264,6 +265,12 @@ public class GameScript : MonoBehaviour
             Instantiate(rKing, new Vector3(selectedPiece.transform.position.x, 0.22f, selectedPiece.transform.position.z), Quaternion.identity);
             Destroy(selectedPiece.gameObject);
         }
+
+        if (selectedPieceStartingTag == "blackPiece" && selectedPiece.transform.position.z <= 0f)
+        {
+            Instantiate(bKing, new Vector3(selectedPiece.transform.position.x, 0.22f, selectedPiece.transform.position.z), Quaternion.identity);
+            Destroy(selectedPiece.gameObject);
+        }
     }
 
     bool checkForCapturablePiece(float x, float z) {
@@ -285,6 +292,17 @@ public class GameScript : MonoBehaviour
             if( (hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" ) || (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece"))
             {
                 Destroy(hitColliders[0].gameObject);
+
+                //Increase score
+                if (selectedPieceStartingTag == "redPiece")
+                {
+                    RedScoreScript.redCurrScore++; //Increase red score
+                }
+                else
+                {
+                    BlackScoreScript.blackCurrScore++; //Increase black core
+                }
+
                 return true;
             } 
 
