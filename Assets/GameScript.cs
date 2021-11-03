@@ -6,6 +6,7 @@ public class GameScript : MonoBehaviour
 {
     //UI variables
     public GameObject PauseScreen;
+    public GameObject WinScreen;
 
 
 
@@ -28,6 +29,8 @@ public class GameScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        RedScoreScript.redCurrScore = 0;
+        BlackScoreScript.blackCurrScore = 0;
         selectedPiece = null;
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
                                             { null, r, null, r, null, r, null, r },
@@ -192,6 +195,7 @@ public class GameScript : MonoBehaviour
         }
 
         //Change position of king piece to a different square if it's valid
+        //Applies to both black and red king
         else if (selectedPiece.transform.childCount == 2)
         {
             //Includes red piece movement
@@ -269,6 +273,12 @@ public class GameScript : MonoBehaviour
             Instantiate(rKing, new Vector3(selectedPiece.transform.position.x, 0.22f, selectedPiece.transform.position.z), Quaternion.identity);
             Destroy(selectedPiece.gameObject);
         }
+
+        if (selectedPieceStartingTag == "blackPiece" && selectedPiece.transform.position.z <= 0f)
+        {
+            Instantiate(bKing, new Vector3(selectedPiece.transform.position.x, 0.22f, selectedPiece.transform.position.z), Quaternion.identity);
+            Destroy(selectedPiece.gameObject);
+        }
     }
 
     bool checkForCapturablePiece(float x, float z) {
@@ -290,7 +300,33 @@ public class GameScript : MonoBehaviour
             if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
                 Destroy(hitColliders[0].gameObject);
+
+
+                //Increase score
+                if (selectedPieceStartingTag == "redPiece")
+                {
+                    RedScoreScript.redCurrScore++; //Increase red score
+                }
+                else
+                {
+                    BlackScoreScript.blackCurrScore++; //Increase black core
+                }
+
+                //Check if player wins (12 points = win)
+                if (RedScoreScript.redCurrScore == 12)
+                {
+                    WinnerTextScript.currWinner = "Red Wins!";
+                    WinScreen.SetActive(true);
+                }
+                else if (BlackScoreScript.blackCurrScore == 12)
+                {
+                    WinnerTextScript.currWinner = "Black Wins!";
+                    WinScreen.SetActive(true);
+                }
+
+
                 ScoreBoard.redScore += 1;
+
                 return true;
             } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
             {
