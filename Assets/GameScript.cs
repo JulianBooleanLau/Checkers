@@ -15,6 +15,7 @@ public class GameScript : MonoBehaviour
     public GameObject b; //Black piece prefab
     public GameObject rKing;
     public GameObject bKing;
+ 
     private Transform selectedPiece; //Current selected piece
  
 
@@ -299,6 +300,7 @@ public class GameScript : MonoBehaviour
             //Case for Red capturing a black piece
             if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
+                GrayExplosion.explode(hitColliders[0].gameObject.transform.position);
                 Destroy(hitColliders[0].gameObject);
 
 
@@ -330,8 +332,9 @@ public class GameScript : MonoBehaviour
                 return true;
             } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
             {
+                RedExplosion.explode(hitColliders[0].gameObject.transform.position);
                 Destroy(hitColliders[0].gameObject);
-                ScoreBoard.blackScore += 1;
+                ScoreBoard.blackScore += 1;             
                 return true;
             }
         }
