@@ -7,7 +7,8 @@ public class GameScript : MonoBehaviour
     //UI variables
     public GameObject PauseScreen;
     public GameObject WinScreen;
-
+    Color endTurnColorClickable = Color.green;
+    Color endTurnColorNonClickable = Color.gray;
 
 
     //Variables initalized using the drag and drop on inspector
@@ -16,6 +17,9 @@ public class GameScript : MonoBehaviour
     public GameObject rKing;
     public GameObject bKing;
     private Transform selectedPiece; //Current selected piece
+    public static int whichPlayersTurn; //Value = 1 if it's red's turn value = -1 if it's blacks turn
+    public static int moveMade;
+    public static bool didEndTurn;
  
 
     //Variables used for piece highlighting
@@ -31,7 +35,10 @@ public class GameScript : MonoBehaviour
     {
         RedScoreScript.redCurrScore = 0;
         BlackScoreScript.blackCurrScore = 0;
+        whichPlayersTurn = 1;
         selectedPiece = null;
+        moveMade = 0;
+        didEndTurn = false;
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
                                             { null, r, null, r, null, r, null, r },
                                             { r, null, r, null, r, null, r, null },
@@ -54,10 +61,6 @@ public class GameScript : MonoBehaviour
                 }
             }
         }
-        
-        //Initialize score
-        ScoreBoard.redScore = 0;
-        ScoreBoard.blackScore = 0;
     }
 
     // Update is called once per frame
@@ -67,12 +70,16 @@ public class GameScript : MonoBehaviour
         {
             PauseScreen.SetActive(true);
         }
-
-        movePiece();
+        if(didEndTurn == true && selectedPiece != null)
+        {
+            deselectCurrent();
+            didEndTurn = false;
+        }
+        mouseClick();
     }
 
     //Allows the user to select a game piece
-    void movePiece()
+    void mouseClick()
     {
         //Do things if you click
         if (Input.GetMouseButtonDown(0))
@@ -82,21 +89,17 @@ public class GameScript : MonoBehaviour
             if (click)
             {
                 Vector3 pos = objectFound.transform.position;
-                Debug.Log("Pos X" + pos.x.ToString("f5"));
-                //Debug.Log("pos Y" + pos.y.ToString("f5"));
-                Debug.Log("pos Z" + pos.z.ToString("f5"));
-                //Debug.Log(objectFound.transform.position);
 
-                if ((objectFound.transform.tag == "redPiece" || objectFound.transform.tag == "blackPiece") && selectedPiece == null)
+                if ( ( (objectFound.transform.tag == "redPiece" && whichPlayersTurn == 1) || (objectFound.transform.tag == "blackPiece" && whichPlayersTurn == -1) ) && selectedPiece == null && moveMade == 0)
                 {
                     selectPiece(objectFound, click);
                 }
-                else if (objectFound.transform.tag == "selectedPiece" && selectedPiece != null)
+                else if (objectFound.transform.tag == "selectedPiece" && selectedPiece != null && moveMade != 2)
                 {
                     deselectCurrent();
                 }
                 //The reason why the if statement is weird is due to floating point number comparions.
-                else if (objectFound.transform.tag == "square" && selectedPiece != null)
+                else if (objectFound.transform.tag == "square" && selectedPiece != null && moveMade != 1)
                 {
                     selectSquare(objectFound.transform);
                 }
@@ -113,9 +116,7 @@ public class GameScript : MonoBehaviour
         //Find out what was clicked on
         selectedPiece = pieceFound.transform;
 
-
         //Highlighting
-        //Material highlightMaterial = Resources.Load("Assets/Materials/Highlight", typeof(Material)) as Material;
         selectedPieceStartingMaterial = selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material;
         selectedPieceStartingTag = selectedPiece.tag;
         
@@ -125,55 +126,94 @@ public class GameScript : MonoBehaviour
 
     void selectSquare(Transform square)
     {
-        
+        //functions return 0 if nothing happened; they return 1 if a simple move was made (no capture); they return 2 if a piece was captured
+        if (selectedPieceStartingTag == "redPiece" && selectedPiece.transform.childCount == 1 && moveMade != 1)
+        {
+            redPieceMove(square);
+        }
+        if(selectedPieceStartingTag == "blackPiece" && selectedPiece.transform.childCount == 1 && moveMade != 1)
+        {
+            blackPieceMove(square);
+        }
+        if (selectedPiece.transform.childCount == 2 && moveMade != 1)
+        {
+            kingPieceMove(square);
+        }
+
+        //Check what move the player made
+        if(moveMade == 1)
+        {
+            EndTurn.img.color = endTurnColorClickable;
+            //Change piece colour back to its original colour and set selected piece to null
+            deselectCurrent();
+        }
+        else if(moveMade == 2)
+        {
+            EndTurn.img.color = endTurnColorClickable;
+        }
+
+        Debug.Log(moveMade);
+        //Check if the selected piece has been moved to a king square.
+        checkForKing();
+    }
+
+    void redPieceMove(Transform square)
+    {
         //Change position of red piece to a different square if it's valid
         if (selectedPieceStartingTag == "redPiece" && selectedPiece.transform.childCount == 1)
         {
             //Checking for legal single tile move
 
             //To move red piece 1 up 1 right
-            if ( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900) ) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ) )
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)) && moveMade != 2)
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+                moveMade = 1;
             }
             //To move red piece 1 up 1 left
-            else if( Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x -1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850) ) )
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)) && moveMade != 2)
             {
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+                moveMade = 1;
             }
 
             //Checking for legal capture move
 
             //For red piece to capture 2 up 2 right
-            if ( (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 1.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850)) ) && checkForCapturablePiece( (float)(selectedPiece.position.x + 1), (float)(selectedPiece.position.z + 1) ) )
+            if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 1.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850))) && checkForCapturablePiece((float)(selectedPiece.position.x + 1), (float)(selectedPiece.position.z + 1)))
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 2, selectedPiece.position.y, selectedPiece.position.z + 2);
+                moveMade = 2;
             } //For red piece to capture 2 up 2 left
-            else if ( (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850)) ) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z + 1)))
+            else if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850))) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z + 1)))
             {
                 //Move the piece to this square
-                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + - 2, selectedPiece.position.y, selectedPiece.position.z + 2);
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + -2, selectedPiece.position.y, selectedPiece.position.z + 2);
+                moveMade = 2;
             }
-
         }
-
+    }
+    void blackPieceMove(Transform square)
+    {
         //Change position of black piece to a different square if it's valid
-        else if (selectedPieceStartingTag == "blackPiece" && selectedPiece.transform.childCount == 1)
+        if (selectedPieceStartingTag == "blackPiece" && selectedPiece.transform.childCount == 1)
         {
             //Checking for legal single tile move
 
             //To move black piece 1 down 1 right
-            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)) && moveMade != 2)
             {
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+                moveMade = 1;
             }
             //To move black piece 1 down 1 left
-            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)) && moveMade != 2)
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+                moveMade = 1;
             }
 
 
@@ -183,33 +223,39 @@ public class GameScript : MonoBehaviour
             if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 1.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 2.150))) && checkForCapturablePiece((float)(selectedPiece.position.x + 1), (float)(selectedPiece.position.z - 1)))
             {
                 //Move the piece to this square
-                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + + 2, selectedPiece.position.y, selectedPiece.position.z - 2);
+                selectedPiece.transform.position = new Vector3(selectedPiece.position.x + +2, selectedPiece.position.y, selectedPiece.position.z - 2);
+                moveMade = 2;
             }
             //For black piece to capture 2 down 2 left
             else if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 2.150))) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z - 1)))
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 2, selectedPiece.position.y, selectedPiece.position.z - 2);
+                moveMade = 2;
             }
 
         }
-
+    }
+    void kingPieceMove(Transform square)
+    {
         //Change position of king piece to a different square if it's valid
         //Applies to both black and red king
-        else if (selectedPiece.transform.childCount == 2)
+        if (selectedPiece.transform.childCount == 2)
         {
             //Includes red piece movement
 
             //To move king piece 1 up 1 right
-            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)))
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)) && moveMade != 2)
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+                moveMade = 1;                                         
             }
             //To move king piece 1 up 1 left
-            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)))
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)) && moveMade != 2)
             {
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z + 1);
+                moveMade = 1;
             }
 
             //Checking for legal capture move
@@ -219,26 +265,30 @@ public class GameScript : MonoBehaviour
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 2, selectedPiece.position.y, selectedPiece.position.z + 2);
+                moveMade = 2;
             } //For king piece to capture 2 up 2 left
             else if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 1.850))) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z + 1)))
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + -2, selectedPiece.position.y, selectedPiece.position.z + 2);
+                moveMade = 2;
             }
 
 
             //Includes Black piece movement
 
             //To move king piece 1 down 1 right
-            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)) && moveMade != 2)
             {
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+                moveMade = 1;
             }
             //To move king piece 1 down 1 left
-            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
+            else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)) && moveMade != 2)
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z - 1);
+                moveMade = 1;
             }
 
 
@@ -249,21 +299,16 @@ public class GameScript : MonoBehaviour
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x + +2, selectedPiece.position.y, selectedPiece.position.z - 2);
+                moveMade = 2;
             }
             //For king piece to capture 2 down 2 left
             else if ((Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 2.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 2.150))) && checkForCapturablePiece((float)(selectedPiece.position.x - 1), (float)(selectedPiece.position.z - 1)))
             {
                 //Move the piece to this square
                 selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 2, selectedPiece.position.y, selectedPiece.position.z - 2);
+                moveMade = 2;
             }
         }
-
-        //Check if the selected piece has been moved to a king square.
-        checkForKing();
-
-        //Change piece colour back to its original colour and set selected piece to null
-        deselectCurrent();
-        
     }
 
     void checkForKing()
@@ -324,21 +369,17 @@ public class GameScript : MonoBehaviour
                     WinScreen.SetActive(true);
                 }
 
-
-                ScoreBoard.redScore += 1;
-
                 return true;
             } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
             {
                 Destroy(hitColliders[0].gameObject);
-                ScoreBoard.blackScore += 1;
                 return true;
             }
         }
         return false;
     }
 
-void deselectCurrent()
+public void deselectCurrent()
     {
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
         selectedPiece.tag = selectedPieceStartingTag;
