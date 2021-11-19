@@ -9,21 +9,21 @@ public class CapturedPieceScript : MonoBehaviour
     public GameObject rKing; //Red king piece prefab
     public GameObject bKing; //Black king piece prefab
 
-    GameObject[,] redCaptured = new GameObject[4, 3]; //All pieces Red player Captured
-    GameObject[,] blackCaptured = new GameObject[4, 3]; //all pieces Black player captured
+    GameObject[,] redCapturedArray = new GameObject[4, 3]; //All pieces Red player Captured
+    GameObject[,] blackCapturedArray = new GameObject[4, 3]; //all pieces Black player captured
 
     // Start is called before the first frame update
     void Start()
     {
-        redCaptured = new GameObject[4, 3]   { { null, null, null},
-                                               { null, null, null},
-                                               { null, null, null},
-                                               { null, null, null} };
+        redCapturedArray = new GameObject[4, 3]   { { null, null, null},
+                                                    { null, null, null},
+                                                    { null, null, null},
+                                                    { null, null, null} };
 
-        blackCaptured = new GameObject[4, 3]   { { null, null, null},
-                                                 { null, null, null},
-                                                 { null, null, null},
-                                                 { null, null, null} };
+        blackCapturedArray = new GameObject[4, 3]   { { null, null, null},
+                                                      { null, null, null},
+                                                      { null, null, null},
+                                                      { null, null, null} };
     }
 
     // Update is called once per frame
@@ -35,9 +35,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (redCaptured[i, j] != null)
+                if (redCapturedArray[i, j] != null)
                 {
-                    Instantiate(redCaptured[i, j], new Vector3(i - 6.5f, 0.02f, j), Quaternion.identity);
+                    Instantiate(redCapturedArray[i, j], new Vector3(i - 6.5f, 0.02f, j), Quaternion.identity);
                 }
             }
         }
@@ -47,9 +47,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (blackCaptured[i, j] != null)
+                if (blackCapturedArray[i, j] != null)
                 {
-                    Instantiate(blackCaptured[i, j], new Vector3(i + 10.5f, 0.02f, j + 5f), Quaternion.identity);
+                    Instantiate(blackCapturedArray[i, j], new Vector3(i + 10.5f, 0.02f, j + 5f), Quaternion.identity);
                 }
             }
         }
@@ -63,9 +63,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (redCaptured[i, j] == null)
+                if (blackCapturedArray[i, j] == null)
                 {
-                    redCaptured[i, j] = b;
+                    blackCapturedArray[i, j] = r;
                     loop = 0;
                     break;
                 }
@@ -83,9 +83,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (redCaptured[i, j] == null)
+                if (blackCapturedArray[i, j] == null)
                 {
-                    redCaptured[i, j] = bKing;
+                    blackCapturedArray[i, j] = rKing;
                     loop = 0;
                     break;
                 }
@@ -103,9 +103,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (blackCaptured[i, j] == null)
+                if (redCapturedArray[i, j] == null)
                 {
-                    blackCaptured[i, j] = r;
+                    redCapturedArray[i, j] = b;
                     loop = 0;
                     break;
                 }
@@ -123,9 +123,9 @@ public class CapturedPieceScript : MonoBehaviour
         {
             for (int j = 0; j < 3; j++)
             {
-                if (blackCaptured[i, j] == null)
+                if (redCapturedArray[i, j] == null)
                 {
-                    blackCaptured[i, j] = rKing;
+                    redCapturedArray[i, j] = bKing;
                     loop = 0;
                     break;
                 }

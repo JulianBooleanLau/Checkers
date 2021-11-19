@@ -194,6 +194,7 @@ public class GameScript : MonoBehaviour
         //To move black piece 1 down 1 right
         if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x + 0.900)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)))
         {
+            //Move the piece to this square
             selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
         }
         //To move black piece 1 down 1 left
@@ -250,13 +251,22 @@ public class GameScript : MonoBehaviour
         //Checks if a object is inbetween the selected piece's original spot and the capture spot
         if (Physics.CheckSphere(spawnPos, radius)) 
         {
-
             hitColliders = Physics.OverlapSphere(spawnPos, radius);
 
             //Case for Red capturing a black piece
             if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
                 RedScoreScript.redCurrScore++; //Increase red score
+
+                //Add the captured piece to sideboard.
+                if (hitColliders[0].gameObject.transform.childCount == 1) //Normal piece
+                {
+                    capturedPieceScript.addBlackPiece();
+                }
+                else if (hitColliders[0].gameObject.transform.childCount == 2) //King piece
+                {
+                    capturedPieceScript.addBlackKingPiece();
+                }
 
                 Destroy(hitColliders[0].gameObject);
 
@@ -266,6 +276,16 @@ public class GameScript : MonoBehaviour
             else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
             {
                 BlackScoreScript.blackCurrScore++; //Increase black score
+
+                //Add the captured piece to sideboard.
+                if (hitColliders[0].gameObject.transform.childCount == 1) //Normal piece
+                {
+                    capturedPieceScript.addRedPiece();
+                }
+                else if (hitColliders[0].gameObject.transform.childCount == 2) //King piece
+                {
+                    capturedPieceScript.addRedKingPiece();
+                }
 
                 Destroy(hitColliders[0].gameObject);
 
