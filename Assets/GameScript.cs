@@ -8,7 +8,8 @@ public class GameScript : MonoBehaviour
     public GameObject PauseScreen;
     public GameObject WinScreen;
 
-
+    //Captured pieces appear on side
+    public CapturedPieceScript capturedPieceScript; //Can be used to call methods like: capturedPieceScript.addRedPiece();
 
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
@@ -54,10 +55,6 @@ public class GameScript : MonoBehaviour
                 }
             }
         }
-        
-        //Initialize score
-        ScoreBoard.redScore = 0;
-        ScoreBoard.blackScore = 0;
     }
 
     // Update is called once per frame
@@ -67,6 +64,7 @@ public class GameScript : MonoBehaviour
         {
             PauseScreen.SetActive(true);
         }
+        checkWinner();
 
         movePiece();
     }
@@ -258,46 +256,26 @@ public class GameScript : MonoBehaviour
             //Case for Red capturing a black piece
             if(hitColliders[0].gameObject.tag == "blackPiece" && selectedPieceStartingTag == "redPiece" )
             {
+                RedScoreScript.redCurrScore++; //Increase red score
+
                 Destroy(hitColliders[0].gameObject);
-
-
-                //Increase score
-                if (selectedPieceStartingTag == "redPiece")
-                {
-                    RedScoreScript.redCurrScore++; //Increase red score
-                }
-                else
-                {
-                    BlackScoreScript.blackCurrScore++; //Increase black core
-                }
-
-                //Check if player wins (12 points = win)
-                if (RedScoreScript.redCurrScore == 12)
-                {
-                    WinnerTextScript.currWinner = "Red Wins!";
-                    WinScreen.SetActive(true);
-                }
-                else if (BlackScoreScript.blackCurrScore == 12)
-                {
-                    WinnerTextScript.currWinner = "Black Wins!";
-                    WinScreen.SetActive(true);
-                }
-
-
-                ScoreBoard.redScore += 1;
 
                 return true;
-            } else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
+            }
+            //Black capturing red piece
+            else if (hitColliders[0].gameObject.tag == "redPiece" && selectedPieceStartingTag == "blackPiece")
             {
+                BlackScoreScript.blackCurrScore++; //Increase black score
+
                 Destroy(hitColliders[0].gameObject);
-                ScoreBoard.blackScore += 1;
+
                 return true;
             }
         }
         return false;
     }
 
-void deselectCurrent()
+    void deselectCurrent()
     {
         selectedPiece.GetChild(0).gameObject.GetComponent<Renderer>().material = selectedPieceStartingMaterial;
         selectedPiece.tag = selectedPieceStartingTag;
@@ -306,5 +284,19 @@ void deselectCurrent()
         selectedPiece = null;
     }
 
+    void checkWinner()
+    {
+        //Check if player wins (12 points = win)
+        if (RedScoreScript.redCurrScore == 12)
+        {
+            WinnerTextScript.currWinner = "Red Wins!";
+            WinScreen.SetActive(true);
+        }
+        else if (BlackScoreScript.blackCurrScore == 12)
+        {
+            WinnerTextScript.currWinner = "Black Wins!";
+            WinScreen.SetActive(true);
+        }
+    }
 }
 

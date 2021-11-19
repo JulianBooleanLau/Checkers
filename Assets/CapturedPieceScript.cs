@@ -9,27 +9,27 @@ public class CapturedPieceScript : MonoBehaviour
     public GameObject rKing; //Red king piece prefab
     public GameObject bKing; //Black king piece prefab
 
-    GameObject[,] redCaptured = new GameObject[4, 3];
-    GameObject[,] blackCaptured = new GameObject[4, 3];
+    GameObject[,] redCaptured = new GameObject[4, 3]; //All pieces Red player Captured
+    GameObject[,] blackCaptured = new GameObject[4, 3]; //all pieces Black player captured
 
     // Start is called before the first frame update
     void Start()
     {
-        redCaptured = new GameObject[4, 3]   { { b, b, b},
-                                               { b, b, b},
-                                               { b, b, b},
-                                               { b, b, b} };
+        redCaptured = new GameObject[4, 3]   { { null, null, null},
+                                               { null, null, null},
+                                               { null, null, null},
+                                               { null, null, null} };
 
-        blackCaptured = new GameObject[4, 3]   { { r, r, r},
-                                                 { r, r, r},
-                                                 { r, r, r},
-                                                 { r, r, r} };
+        blackCaptured = new GameObject[4, 3]   { { null, null, null},
+                                                 { null, null, null},
+                                                 { null, null, null},
+                                                 { null, null, null} };
     }
 
     // Update is called once per frame
     void Update()
     {
-        //RedScoreScript.redCurrScore
+        //RedScoreScript.redCurrScore 
 
         for (int i = 0; i < 4; i++)
         {
@@ -57,23 +57,81 @@ public class CapturedPieceScript : MonoBehaviour
 
     public void addRedPiece()
     {
+        int loop = 1; //Used to break out of the for
 
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (redCaptured[i, j] == null)
+                {
+                    redCaptured[i, j] = b;
+                    loop = 0;
+                    break;
+                }
+            }
+
+            if (loop == 0) break;
+        }
     }
 
     public void addRedKingPiece()
     {
+        int loop = 1; //Used to break out of the for
 
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (redCaptured[i, j] == null)
+                {
+                    redCaptured[i, j] = bKing;
+                    loop = 0;
+                    break;
+                }
+            }
+
+            if (loop == 0) break;
+        }
     }
 
     public void addBlackPiece()
     {
+        int loop = 1; //Used to break out of the for
 
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (blackCaptured[i, j] == null)
+                {
+                    blackCaptured[i, j] = r;
+                    loop = 0;
+                    break;
+                }
+            }
+
+            if (loop == 0) break;
+        }
     }
 
     public void addBlackKingPiece()
     {
+        int loop = 1; //Used to break out of the for
 
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                if (blackCaptured[i, j] == null)
+                {
+                    blackCaptured[i, j] = rKing;
+                    loop = 0;
+                    break;
+                }
+            }
+
+            if (loop == 0) break;
+        }
     }
-
-    
 }
