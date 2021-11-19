@@ -13,8 +13,8 @@ public class GameScript : MonoBehaviour
     //Variables initalized using the drag and drop on inspector
     public GameObject r; //Red piece prefab
     public GameObject b; //Black piece prefab
-    public GameObject rKing;
-    public GameObject bKing;
+    public GameObject rKing; //Red king piece prefab
+    public GameObject bKing; //Black king piece prefab
     private Transform selectedPiece; //Current selected piece
  
 
