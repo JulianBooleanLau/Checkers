@@ -1,3 +1,4 @@
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,7 +23,11 @@ public class GameScript : MonoBehaviour
     //Variables used for piece highlighting
     public Material highlightMaterial; //Material used when piece is highlighted
     private Material selectedPieceStartingMaterial;
-    private string selectedPieceStartingTag;   
+    private string selectedPieceStartingTag;
+
+    //variable for cycling through the json file
+    public SaveUser loadedObject;
+    public bool isOver = false;   
     
 
     GameObject[,] pieceArray = new GameObject[8, 8];
@@ -307,16 +312,59 @@ public class GameScript : MonoBehaviour
     void checkWinner()
     {
         //Check if player wins (12 points = win)
-        if (RedScoreScript.redCurrScore == 12)
+        if (RedScoreScript.redCurrScore == 12) 
         {
             WinnerTextScript.currWinner = "Red Wins!";
-            WinScreen.SetActive(true);
+            updateStats(NameMenu.name1Text, NameMenu.name2Text);
         }
-        else if (BlackScoreScript.blackCurrScore == 12)
+
+        else if (BlackScoreScript.blackCurrScore == 12) 
         {
             WinnerTextScript.currWinner = "Black Wins!";
-            WinScreen.SetActive(true);
+            updateStats(NameMenu.name2Text, NameMenu.name1Text);
+
         }
+    }
+
+    void updateStats(string name1, string name2)
+    {
+        string[] readArray = File.ReadAllLines(Application.dataPath + "/save.txt");
+
+        if(isOver == false)
+        {
+            isOver = true;
+            for (int i = 0; i < readArray.Length; i++)
+            {
+                //convert string to json
+                loadedObject = JsonUtility.FromJson<SaveUser>(readArray[i]);
+
+                //check if name user types is already in the save
+                if(loadedObject.Name == name1)
+                {
+                    loadedObject.Wins = loadedObject.Wins + 1;
+                    readArray[i] = JsonUtility.ToJson(loadedObject);
+                }
+
+                if(loadedObject.Name == name2)
+                {
+                    loadedObject.Losses = loadedObject.Losses + 1;
+                    readArray[i] = JsonUtility.ToJson(loadedObject);
+                }
+            }
+
+            File.WriteAllLines(Application.dataPath + "/save.txt", readArray);
+            File.AppendAllText(Application.dataPath + "/history.txt",  name1+ " (W) Vs. " + name2 + " (L)\n");
+
+        }
+        
+        WinScreen.SetActive(true);
+    }
+
+    public class SaveUser 
+    {
+        public string Name;
+        public int Wins;
+        public int Losses;
     }
 }
 
