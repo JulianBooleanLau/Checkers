@@ -24,6 +24,7 @@ public class GameScript : MonoBehaviour
     public Material highlightMaterial; //Material used when piece is highlighted
     private Material selectedPieceStartingMaterial;
     private string selectedPieceStartingTag;
+    public static int whosTurnIsIt; //1 = red , -1 = black
 
     //variable for cycling through the json file
     public SaveUser loadedObject;
@@ -38,6 +39,8 @@ public class GameScript : MonoBehaviour
         RedScoreScript.redCurrScore = 0;
         BlackScoreScript.blackCurrScore = 0;
         selectedPiece = null;
+        whosTurnIsIt = 1;
+
         pieceArray = new GameObject[8, 8] { { r, null, r, null, r, null, r, null },
                                             { null, r, null, r, null, r, null, r },
                                             { r, null, r, null, r, null, r, null },
@@ -89,7 +92,7 @@ public class GameScript : MonoBehaviour
                 Debug.Log("pos Z" + pos.z.ToString("f5"));
 
 
-                if ((objectFound.transform.tag == "redPiece" || objectFound.transform.tag == "blackPiece") && selectedPiece == null)
+                if ( ( (objectFound.transform.tag == "redPiece"  && whosTurnIsIt == 1) || (objectFound.transform.tag == "blackPiece" && whosTurnIsIt == -1)) && selectedPiece == null)
                 {
                     selectPiece(objectFound, click);
                 }
