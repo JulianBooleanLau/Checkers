@@ -15,6 +15,11 @@ public class CapturedPieceScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        rKing.tag = "Untagged";
+        bKing.tag = "Untagged";
+        r.tag = "Untagged";
+        b.tag = "Untagged";
+
         redCapturedArray = new GameObject[4, 3]   { { null, null, null},
                                                     { null, null, null},
                                                     { null, null, null},
@@ -28,8 +33,12 @@ public class CapturedPieceScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    { 
+    }
+
+    public void updateCapturedBoard()
     {
-        //RedScoreScript.redCurrScore 
+
 
         for (int i = 0; i < 4; i++)
         {
@@ -73,6 +82,7 @@ public class CapturedPieceScript : MonoBehaviour
 
             if (loop == 0) break;
         }
+        updateCapturedBoard();
     }
 
     public void addRedKingPiece()
@@ -93,6 +103,7 @@ public class CapturedPieceScript : MonoBehaviour
 
             if (loop == 0) break;
         }
+        updateCapturedBoard();
     }
 
     public void addBlackPiece()
@@ -113,6 +124,7 @@ public class CapturedPieceScript : MonoBehaviour
 
             if (loop == 0) break;
         }
+        updateCapturedBoard();
     }
 
     public void addBlackKingPiece()
@@ -133,5 +145,6 @@ public class CapturedPieceScript : MonoBehaviour
 
             if (loop == 0) break;
         }
+        updateCapturedBoard();
     }
 }

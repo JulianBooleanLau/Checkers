@@ -222,6 +222,8 @@ MonoBehaviour:
   rKing: {fileID: 2984569601296945584, guid: a319e18abf564c44e999419feedeb04a, type: 3}
   bKing: {fileID: 4743256375034533071, guid: 1701d192b25e1bd4ebd101b68ea2148e, type: 3}
   highlightMaterial: {fileID: 2100000, guid: cca916dbf9f4b4b4f8bdcc85245a2440, type: 2}
+  whosTurnIsIt: 0
+  didCaptureOccur: 0
   isOver: 0
 --- !u!114 &22586896
 MonoBehaviour:
@@ -1963,6 +1965,18 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 2126162699}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1064272909}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -3906,8 +3920,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 524012394}
-  - {fileID: 2126162700}
   - {fileID: 1064272910}
+  - {fileID: 2126162700}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5544,13 +5558,13 @@ RectTransform:
   m_Children:
   - {fileID: 1296461882}
   m_Father: {fileID: 611953067}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -80, y: 15}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1064272911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5560,9 +5574,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1064272909}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8b569f4bb7826064287c90c583efd4b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ae95d9d6d788db44a15b2446bea0b52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameScript: {fileID: 22586895}
+  img: {fileID: 1064272913}
+  text: {fileID: 1296461883}
 --- !u!114 &1064272912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5608,8 +5625,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1064272911}
-        m_TargetAssemblyTypeName: ResetButton, Assembly-CSharp
-        m_MethodName: resetBoard
+        m_TargetAssemblyTypeName: EndTurn, Assembly-CSharp
+        m_MethodName: switchTurn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6698,7 +6715,7 @@ GameObject:
   - component: {fileID: 1296461884}
   - component: {fileID: 1296461883}
   m_Layer: 5
-  m_Name: Text
+  m_Name: EndTurnText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10637,13 +10654,13 @@ RectTransform:
   m_Children:
   - {fileID: 1152918948}
   m_Father: {fileID: 611953067}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -80, y: 15}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &2126162701
 MonoBehaviour:
   m_ObjectHideFlags: 0
