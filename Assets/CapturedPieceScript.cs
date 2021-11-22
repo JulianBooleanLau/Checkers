@@ -8,6 +8,10 @@ public class CapturedPieceScript : MonoBehaviour
     public GameObject b; //Black piece prefab
     public GameObject rKing; //Red king piece prefab
     public GameObject bKing; //Black king piece prefab
+    GameObject tempR;
+    GameObject tempB;
+    GameObject tempRking;
+    GameObject tempBking;
 
     GameObject[,] redCapturedArray = new GameObject[4, 3]; //All pieces Red player Captured
     GameObject[,] blackCapturedArray = new GameObject[4, 3]; //all pieces Black player captured
@@ -15,10 +19,16 @@ public class CapturedPieceScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rKing.tag = "Untagged";
-        bKing.tag = "Untagged";
-        r.tag = "Untagged";
-        b.tag = "Untagged";
+        tempR = r;
+        tempB = b;
+        tempRking = rKing;
+        tempBking = bKing;
+
+
+        tempRking.tag = "Untagged";
+        tempBking.tag = "Untagged";
+        tempR.tag = "Untagged";
+        tempB.tag = "Untagged";
 
         redCapturedArray = new GameObject[4, 3]   { { null, null, null},
                                                     { null, null, null},
@@ -74,7 +84,7 @@ public class CapturedPieceScript : MonoBehaviour
             {
                 if (blackCapturedArray[i, j] == null)
                 {
-                    blackCapturedArray[i, j] = r;
+                    blackCapturedArray[i, j] = tempR;
                     loop = 0;
                     break;
                 }
@@ -95,7 +105,7 @@ public class CapturedPieceScript : MonoBehaviour
             {
                 if (blackCapturedArray[i, j] == null)
                 {
-                    blackCapturedArray[i, j] = rKing;
+                    blackCapturedArray[i, j] = tempRking;
                     loop = 0;
                     break;
                 }
@@ -116,7 +126,7 @@ public class CapturedPieceScript : MonoBehaviour
             {
                 if (redCapturedArray[i, j] == null)
                 {
-                    redCapturedArray[i, j] = b;
+                    redCapturedArray[i, j] = tempB;
                     loop = 0;
                     break;
                 }
@@ -137,7 +147,7 @@ public class CapturedPieceScript : MonoBehaviour
             {
                 if (redCapturedArray[i, j] == null)
                 {
-                    redCapturedArray[i, j] = bKing;
+                    redCapturedArray[i, j] = tempBking;
                     loop = 0;
                     break;
                 }
