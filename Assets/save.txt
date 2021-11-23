@@ -1,12 +1,4 @@
-{"Name":"Andrew","Wins":1,"Losses":1}
-{"Name":"Peter","Wins":1,"Losses":1}
-{"Name":"Bob","Wins":0,"Losses":0}
-{"Name":"Phil","Wins":0,"Losses":0}
-{"Name":"231","Wins":0,"Losses":0}
-{"Name":"3213","Wins":0,"Losses":0}
-{"Name":"","Wins":0,"Losses":0}
-{"Name":"","Wins":0,"Losses":0}
-{"Name":"test1","Wins":0,"Losses":0}
-{"Name":"test2","Wins":0,"Losses":0}
-{"Name":"1","Wins":0,"Losses":0}
-{"Name":"2","Wins":0,"Losses":0}
+{"Name":"Andrew","Wins":1,"Losses":0}
+{"Name":"Peter","Wins":0,"Losses":1}
+{"Name":"Julian","Wins":1,"Losses":0}
+{"Name":"Lau","Wins":0,"Losses":1}
