@@ -8,6 +8,7 @@ public class GameScript : MonoBehaviour
     //UI variables
     public GameObject PauseScreen;
     public GameObject WinScreen;
+    public Timer timer;
 
     //Captured pieces appear on side
     public CapturedPieceScript capturedPieceScript; //Can be used to call methods like: capturedPieceScript.addRedPiece();
@@ -170,12 +171,14 @@ public class GameScript : MonoBehaviour
             //Move the piece to this square
             selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z + 1);
             whosTurnIsIt *= -1;
+            timer.currentTime = timer.startTime;
         }
         //To move red piece 1 up 1 left
         else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z + 0.850)) && didCaptureOccur == false)
         {
             selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z + 1);
             whosTurnIsIt *= -1;
+            timer.currentTime = timer.startTime;
         }
     }
 
@@ -206,6 +209,7 @@ public class GameScript : MonoBehaviour
             //Move the piece to this square
             selectedPiece.transform.position = new Vector3(selectedPiece.position.x + 1, selectedPiece.position.y, selectedPiece.position.z - 1);
             whosTurnIsIt *= -1;
+            timer.currentTime = timer.startTime;
         }
         //To move black piece 1 down 1 left
         else if (Mathf.Approximately(square.transform.position.x, (float)(selectedPiece.position.x - 1.100)) && Mathf.Approximately(square.transform.position.z, (float)(selectedPiece.position.z - 1.150)) && didCaptureOccur == false)
@@ -213,6 +217,7 @@ public class GameScript : MonoBehaviour
             //Move the piece to this square
             selectedPiece.transform.position = new Vector3(selectedPiece.position.x - 1, selectedPiece.position.y, selectedPiece.position.z - 1);
             whosTurnIsIt *= -1;
+            timer.currentTime = timer.startTime;
         }
     }
 

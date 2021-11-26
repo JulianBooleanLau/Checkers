@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class EndTurn : MonoBehaviour
 {
     public GameScript gameScript;
+    public Timer timer;
     public Image img;
     public Text text;
 
@@ -13,6 +14,9 @@ public class EndTurn : MonoBehaviour
     {
         changeColor();
         changeText();
+        if (timer.currentTime < 0) {
+            endturn();
+        }
     }
     void changeText()
     {
@@ -45,9 +49,15 @@ public class EndTurn : MonoBehaviour
     {
         if(gameScript.didCaptureOccur == true)
         {
-            gameScript.whosTurnIsIt = gameScript.whosTurnIsIt * -1;
-            gameScript.didCaptureOccur = false;
-            gameScript.deselectCurrent();
+            endturn();
         }   
+    }
+
+    public void endturn()
+    {
+        gameScript.whosTurnIsIt *= -1;
+        gameScript.didCaptureOccur = false;
+        gameScript.deselectCurrent();
+        timer.currentTime = timer.startTime;
     }
 }
